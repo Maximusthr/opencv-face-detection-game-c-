@@ -4,6 +4,7 @@
 #include "opencv2/videoio.hpp"
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 
 using namespace std;
 using namespace cv;
@@ -88,8 +89,8 @@ int main(int argc, const char** argv){
         return -1;
     }
 
-    resize(beer, beer, Size(100, 100));
-    resize(derzas, derzas, Size(200, 200));
+    resize(beer, beer, Size(80, 80));
+    resize(derzas, derzas, Size(150, 150));
     
     int fx = rand() % (640 - beer.cols);
     int fy = rand() % (480 - beer.rows);
@@ -112,8 +113,8 @@ int main(int argc, const char** argv){
 
 
         vector<Rect> faces;
-        cascade.detectMultiScale(gray_frame, faces, 1.1, 4); 
-        Rect beerRect = Rect(fx, fy, 100, 100);
+        cascade.detectMultiScale(gray_frame, faces, 1.1, 4, 0, cv::Size(30, 30));
+        Rect beerRect = Rect(fx, fy, beer.cols, beer.rows);
 
         drawImage(frame, derzas, x, y);
 
@@ -121,14 +122,14 @@ int main(int argc, const char** argv){
             //rectangle(frame, face, Scalar(255, 0, 0), 2); // Desenhar retângulo em azul
             rectangle(frame, face, Scalar(255, 0, 0), 2);
             //drawImage(frame, derzas, face.x, face.y);
-            if (!(face.y+derzas.rows >= 480 || face.y <= 0) && !(face.x+derzas.cols >= 680 || face.x <= 0)) {
+            if (!(face.y+derzas.rows >= 480 || face.y <= 0) && !(face.x+derzas.cols >= 640 || face.x <= 0)) {
                 x = face.x; y = face.y;
             }
             
             if ((face & beerRect).area() > 0) {
                 cout << "Colidiu" << endl;
                 rectangle(frame, face, Scalar(0, 0, 255), 2);
-                system("mpg123 -f 500 bebida.mp3 &");
+                //system("mpg123 -f 500 bebida.mp3 &");
                 fx = rand() % (frame.cols - beer.cols);
                 fy = rand() % (frame.rows - beer.rows);
             }
