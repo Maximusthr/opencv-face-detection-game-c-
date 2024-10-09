@@ -9,5 +9,5 @@ class FaceDetector {
         cv::CascadeClassifier cascade;
 
         FaceDetector(const std::string cascadeName);
-        void detect(const cv::Mat grayFrame, std::vector<cv::Rect> faces);
+        void detect(const cv::Mat grayFrame, std::vector<cv::Rect> &faces);
 };

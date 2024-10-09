@@ -20,14 +20,18 @@ class Game {
         FaceDetector faceDetector;
         cv::Mat background;
         cv::VideoCapture cap;
-        Game_object derzas, beer;
+        Game_object derzas, beer, water;
+        std::chrono::time_point<std::chrono::steady_clock> startTime;
         int x, y;
-     
+        bool flip;
+        int score;
+        int timeLimit;
+
         // Game();
         // Game(cv::CascadeClassifier cascade, cv::Mat frame, cv::Mat gray_frame,
         //      cv::Mat smallFrame, cv::Mat background, game_object derzas, game_object beer;
              
         // )
-        Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, std::string beerFilename, std::string derzasFilename);
+        Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, std::string beerFilename, std::string derzasFilename, std::string waterFilename, bool flip);
         void run();
 };

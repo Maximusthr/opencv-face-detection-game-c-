@@ -1,9 +1,7 @@
 #include "../headers/Game_object.h"
 
 Game_object::Game_object() {}
-// game_object::game_object(std::string path) {
-//     this->path = path;
-// }
+
 
 void Game_object::load(std::string filename){
     image = cv::imread(filename, cv::IMREAD_UNCHANGED);
