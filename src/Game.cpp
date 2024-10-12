@@ -49,17 +49,21 @@ void Game::showMenu() {
                     cv::FONT_HERSHEY_SIMPLEX, 1.5, cv::Scalar(255, 255, 255), 2);
         cv::putText(frame, "1 - Iniciar Jogo", cv::Point(80, 300), 
                     cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
-        cv::putText(frame, "2 - Sair", cv::Point(80, 350), 
+        cv::putText(frame, "2 - Ranking", cv::Point(80, 350), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+        cv::putText(frame, "3 - Sair", cv::Point(80, 400), 
                     cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
 
         cv::imshow(windowName, frame);
 
         int key = cv::waitKey(0);
         if (key == '1') {
-            cv::destroyWindow(windowName);
             run();
             break;
         } else if (key == '2') {
+            showRank();
+            break;
+        } else if (key == '3') {
             cv::destroyWindow(windowName);
             exit(0);
         }
@@ -77,18 +81,51 @@ void Game::showScore() {
 
         cv::putText(frame, "1 - Jogar Novamente", cv::Point(80, 300), 
                     cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
-        cv::putText(frame, "2 - Sair", cv::Point(80, 350), 
+        cv::putText(frame, "2 - Ranking", cv::Point(80, 350), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+        cv::putText(frame, "3 - Sair", cv::Point(80, 400), 
                     cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
 
         cv::imshow(windowName, frame);
+
+        score = 0;
 
         int key = cv::waitKey(0);
         if (key == '1') {
             run();
             break;
         } else if (key == '2') {
+            showRank();
+            break;
+        } else if (key == '3') {
             cv::destroyWindow(windowName);
             exit(0);
+        }
+    }
+}
+
+void Game::showRank() {
+    int auxY = 150;
+    while (true) {
+        frame = cv::Mat::zeros(480, 640, CV_8UC3);
+
+        cv::putText(frame, "1 - Voltar", cv::Point(80, 100), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+        
+
+        
+        for(int i = 0; i < scores.size(); i++) {
+            cv::putText(frame, std::to_string(i+1) + ": " + std::to_string(scores[i]), cv::Point(80, auxY), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+            auxY += 50;
+        }  
+
+        cv::imshow(windowName, frame);
+
+        int key = cv::waitKey(0);
+        if (key == '1') {
+            showMenu();
+            break;
         }
     }
 }
@@ -118,6 +155,8 @@ void Game::run() {
         double remainingTime = timeLimit - elapsedTime.count();
 
         if (remainingTime <= 0) {
+            scores.push_back(score);
+            std::sort(scores.rbegin(), scores.rend());
             std::cout << "Tempo esgotado! Sua pontuação: " << score << std::endl;
             showScore();  // Chama a função de exibição do score quando o tempo acaba
             break;

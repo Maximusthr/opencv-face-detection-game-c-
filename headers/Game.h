@@ -24,6 +24,7 @@ class Game {
         Game_object derzas, beer, water;
         std::chrono::time_point<std::chrono::steady_clock> startTime;
         std::vector<std::string> imgs;
+        std::vector<int> scores;
         int x, y;
         bool flip;
         int score;
@@ -41,4 +42,5 @@ class Game {
         void run();
         void showMenu();
         void showScore();
+        void showRank();
 };
