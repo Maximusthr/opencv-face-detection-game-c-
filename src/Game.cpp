@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <fstream>
 
 Game::Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, 
            std::string beerFilename, std::string caipirinhaFilename, std::string derzasFilename, std::string waterFilename, 
@@ -38,6 +39,8 @@ Game::Game(std::string windowName, std::string cascadeName, std::string backgrou
     imgs.push_back(whiskeyFilename);
     imgs.push_back(caipirinhaFilename);
     imgs.push_back(beerFilename);
+
+    loadData();
 }
 
 void Game::showMenu() {
@@ -64,6 +67,7 @@ void Game::showMenu() {
             showRank();
             break;
         } else if (key == '3') {
+            saveData();
             cv::destroyWindow(windowName);
             exit(0);
         }
@@ -98,6 +102,7 @@ void Game::showScore() {
             showRank();
             break;
         } else if (key == '3') {
+            saveData();
             cv::destroyWindow(windowName);
             exit(0);
         }
@@ -134,7 +139,7 @@ void Game::run() {
 
     this->score = 0;
     this->startTime = std::chrono::steady_clock::now();
-    this->timeLimit = 10;
+    this->timeLimit = 60;
 
     int fx = rand() % (640 - beer.getWidth());
     int fy = rand() % (480 - beer.getHeight());
@@ -243,4 +248,42 @@ void Game::run() {
             break;
         }
     }
+}
+
+void Game::loadData() {
+    std::fstream file;
+
+    file.open("data.txt", std::ios_base::in);
+
+    if (!file.is_open()) {
+        std::cerr << "Nao foi possivel abrir o arquivo " << std::endl;
+        return;
+    }
+
+    while (true) {
+      int score;
+      file >> score;
+      file.ignore();
+      if (!file) break;
+      scores.push_back(score);
+    }
+
+  file.close();
+}
+
+void Game::saveData() {
+    std::fstream file;
+
+    file.open("data.txt", std::ios_base::out);
+
+    if (!file.is_open()) {
+        std::cerr << "Nao foi possivel abrir o arquivo " << std::endl;
+        return;
+    }
+
+    for (int s : scores) {
+      file << s << std::endl;
+    }
+
+  file.close();
 }

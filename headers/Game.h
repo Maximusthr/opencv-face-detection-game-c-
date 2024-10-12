@@ -43,4 +43,6 @@ class Game {
         void showMenu();
         void showScore();
         void showRank();
+        void loadData();
+        void saveData();
 };
