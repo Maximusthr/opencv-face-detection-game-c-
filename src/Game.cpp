@@ -23,9 +23,7 @@ Game::Game(std::string windowName, std::string cascadeName, std::string backgrou
         std::cerr << "Error: Could not load background" << std::endl;
         exit(-1);
     }
-    // if (background.channels() == 4){
-    //     cvtColor(background, background, COLOR_BGRA2BGR);
-    // }
+
     cv::resize(background, background, cv::Size(640, 480));
 
     beer.load(beerFilename);
@@ -213,7 +211,7 @@ void Game::run() {
                 fx = rand() % (frame.cols - beer.getWidth());
                 fy = rand() % (frame.rows - beer.getHeight());
                 if (i == 3) {
-                    system("mpg123 -f 500 ./audios/drink2.mp3 &");
+                    system("mpg123 -f 500 ./audios/drink.mp3 &");
                     score += 4;
                 } else {
                     system("mpg123 -f 500 ./audios/drink.mp3 &");

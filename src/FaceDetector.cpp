@@ -6,8 +6,6 @@ FaceDetector::FaceDetector(std::string cascadeName){
         std::cerr << "Error: could not load cascade: " << cascadeName << std::endl;
         exit(-1);
     }
-
-
 }
 
 void FaceDetector::detect(cv::Mat grayFrame, std::vector<cv::Rect> &faces) {

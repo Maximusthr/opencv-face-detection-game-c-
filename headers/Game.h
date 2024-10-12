@@ -30,11 +30,6 @@ class Game {
         int score;
         int timeLimit;
 
-        // Game();
-        // Game(cv::CascadeClassifier cascade, cv::Mat frame, cv::Mat gray_frame,
-        //      cv::Mat smallFrame, cv::Mat background, game_object derzas, game_object beer;
-             
-        // )
         Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, std::string beerFilename,
              std::string caipirinhaFilename, std::string derzasFilename, std::string waterFilename, std::string whiskeyFilename, 
              std::string wineFilename, bool flip);

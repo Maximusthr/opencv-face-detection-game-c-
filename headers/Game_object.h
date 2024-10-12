@@ -13,12 +13,5 @@ class Game_object {
         void load(std::string filename);
         void draw(cv::Mat frame, int x, int y);
         int getWidth();
-        int getHeight();
-        
-        // int x, y;
-        // std::string path;
-        // Mat Game_object = imread(path, IMREAD_UNCHANGED);
-        // Rect rect;
-        // Game_object();
-        // Game_object(std::string path);    
+        int getHeight();  
 };
