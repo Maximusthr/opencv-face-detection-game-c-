@@ -3,22 +3,10 @@
 #include <cstdlib>
 #include <vector>
 
-// game::Game(){};
-// Game(cv::CascadeClassifier cascade, cv::Mat frame, cv::Mat gray_frame,
-//      cv::Mat smallFrame, cv::Mat background, game_object derzas, game_object beer;
-// ) {
-//     this->cascade = cascade;
-//     this->frame = frame;
-//     this->gray_frame = gray_frame;
-//     this->smallFrame = smallFrame;
-//     this->background = background;
-//     this->derzas = derzas;
-//     this->beer = beer;
-// }
-
 
 Game::Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, 
-           std::string beerFilename, std::string derzasFilename, std::string waterFilename, bool flip)
+           std::string beerFilename, std::string caipirinhaFilename, std::string derzasFilename, std::string waterFilename, 
+           std::string whiskeyFilename, std::string wineFilename, bool flip)
     : faceDetector(cascadeName), x(640/2), y(480/2), cap(0) { // Inicializa x e y no centro da tela
 
     if (!cap.isOpened()) {
@@ -43,9 +31,14 @@ Game::Game(std::string windowName, std::string cascadeName, std::string backgrou
     beer.load(beerFilename);
     water.load(waterFilename);
     derzas.load(derzasFilename);
-    cv::resize(beer.image, beer.image, cv::Size(80, 80));
-    cv::resize(water.image, water.image, cv::Size(80, 80));
-    cv::resize(derzas.image, derzas.image, cv::Size(150, 150));
+    cv::resize(beer.image, beer.image, cv::Size(50, 50));
+    cv::resize(water.image, water.image, cv::Size(50, 50));
+    cv::resize(derzas.image, derzas.image, cv::Size(100, 130));
+
+    imgs.push_back(wineFilename);
+    imgs.push_back(whiskeyFilename);
+    imgs.push_back(caipirinhaFilename);
+    imgs.push_back(beerFilename);
 }
 
 
@@ -95,7 +88,7 @@ void Game::run() {
         beer.draw(frame, fx, fy);
         cv::Rect beerRect(fx, fy, beer.getWidth(), beer.getHeight());
 
-        //agua
+        // //agua
         water.draw(frame, gx, gy);
         cv::Rect waterRect(gx, gy, water.getWidth(), water.getHeight());
 
@@ -124,17 +117,32 @@ void Game::run() {
 
             if ((derzasRect & beerRect).area() > 0) {
                 std::cout << "Colidiu" << std::endl;
+                static int i = 0;
+                if (i+1 < imgs.size()) {
+                    i++;
+                    beer.load(imgs[i]);
+                    cv::resize(beer.image, beer.image, cv::Size(50, 50));
+                } else {
+                    i = 0;
+                    beer.load(imgs[i]);
+                    cv::resize(beer.image, beer.image, cv::Size(50, 50));
+                }
                 rectangle(frame, face, cv::Scalar(0, 0, 255), 2);
-                system("mpg123 -f 500 bebida.mp3 &");
                 fx = rand() % (frame.cols - beer.getWidth());
                 fy = rand() % (frame.rows - beer.getHeight());
-                score++;
-            } 
+                if (i == 3) {
+                    system("mpg123 -f 500 ./audios/drink2.mp3 &");
+                    score += 4;
+                } else {
+                    system("mpg123 -f 500 ./audios/drink.mp3 &");
+                    score++;
+                }
+            }
 
             if ((derzasRect & waterRect).area() > 0) {
                 std::cout << "Colidiu agua" << std::endl;
                 rectangle(frame, face, cv::Scalar(0, 0, 255), 2);
-                system("mpg123 -f 500 agua.mp3 &");
+                system("mpg123 -f 500 ./audios/damage.mp3 &");
                 gx = rand() % (frame.cols - water.getWidth());
                 gy = rand() % (frame.rows - water.getHeight());
                 score -= 3;
@@ -144,7 +152,8 @@ void Game::run() {
             if ( gy < face.y && gy < (480 - water.getHeight()) ) gy += 1;
             if ( gx > face.x && gx > 1) gx -= 1;
             if ( gy > face.y && gy > 1) gy -= 1;
-           
+
+            break;
         }
 
         std::string scoreText = "Score: " + std::to_string(score);

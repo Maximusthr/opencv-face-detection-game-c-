@@ -22,6 +22,7 @@ class Game {
         cv::VideoCapture cap;
         Game_object derzas, beer, water;
         std::chrono::time_point<std::chrono::steady_clock> startTime;
+        std::vector<std::string> imgs;
         int x, y;
         bool flip;
         int score;
@@ -32,6 +33,9 @@ class Game {
         //      cv::Mat smallFrame, cv::Mat background, game_object derzas, game_object beer;
              
         // )
-        Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, std::string beerFilename, std::string derzasFilename, std::string waterFilename, bool flip);
+        Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, std::string beerFilename,
+             std::string caipirinhaFilename, std::string derzasFilename, std::string waterFilename, std::string whiskeyFilename, 
+             std::string wineFilename, bool flip);
+
         void run();
 };
