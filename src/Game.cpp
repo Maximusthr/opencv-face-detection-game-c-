@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <vector>
 
-
 Game::Game(std::string windowName, std::string cascadeName, std::string backgroundFilename, 
            std::string beerFilename, std::string caipirinhaFilename, std::string derzasFilename, std::string waterFilename, 
            std::string whiskeyFilename, std::string wineFilename, bool flip)
@@ -41,42 +40,88 @@ Game::Game(std::string windowName, std::string cascadeName, std::string backgrou
     imgs.push_back(beerFilename);
 }
 
+void Game::showMenu() {
+    while (true) {
+        frame = cv::Mat::zeros(480, 640, CV_8UC3);
+
+        // Exibe o título do menu
+        cv::putText(frame, "Menu Principal", cv::Point(80, 200), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1.5, cv::Scalar(255, 255, 255), 2);
+        cv::putText(frame, "1 - Iniciar Jogo", cv::Point(80, 300), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+        cv::putText(frame, "2 - Sair", cv::Point(80, 350), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+
+        cv::imshow(windowName, frame);
+
+        int key = cv::waitKey(0);
+        if (key == '1') {
+            cv::destroyWindow(windowName);
+            run();
+            break;
+        } else if (key == '2') {
+            cv::destroyWindow(windowName);
+            exit(0);
+        }
+    }
+}
+
+void Game::showScore() {
+    while (true) {
+        frame = cv::Mat::zeros(480, 640, CV_8UC3);
+
+        // Exibe o score final
+        std::string scoreText = "Pontuacao Final: " + std::to_string(score);
+        cv::putText(frame, scoreText, cv::Point(80, 200), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1.5, cv::Scalar(255, 255, 255), 2);
+
+        cv::putText(frame, "1 - Jogar Novamente", cv::Point(80, 300), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+        cv::putText(frame, "2 - Sair", cv::Point(80, 350), 
+                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);
+
+        cv::imshow(windowName, frame);
+
+        int key = cv::waitKey(0);
+        if (key == '1') {
+            run();
+            break;
+        } else if (key == '2') {
+            cv::destroyWindow(windowName);
+            exit(0);
+        }
+    }
+}
 
 void Game::run() {
 
     this->score = 0;
     this->startTime = std::chrono::steady_clock::now();
-    this->timeLimit = 60;
+    this->timeLimit = 10;
 
     int fx = rand() % (640 - beer.getWidth());
     int fy = rand() % (480 - beer.getHeight());
-    
+
     int gx = rand() % (640 - water.getWidth());
     int gy = rand() % (480 - water.getHeight());  
 
-
     while (true) {
-        cv::Mat frame;
         cap >> frame;
 
         if (frame.empty()) {
             std::cerr << "Error: Blank frame grabbed" << std::endl;
             break;
         }
-        
+
         auto currentTime = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsedTime = currentTime - startTime;
         double remainingTime = timeLimit - elapsedTime.count();
 
-        // std::cout << "timeLimit: " << timeLimit << std::endl;
-        // std::cout << "Elapsed Time: " << elapsedTime.count() << std::endl;
-        // std::cout << "Remaining Time: " << remainingTime << std::endl;
-
         if (remainingTime <= 0) {
             std::cout << "Tempo esgotado! Sua pontuação: " << score << std::endl;
+            showScore();  // Chama a função de exibição do score quando o tempo acaba
             break;
         }
-
 
         if (flip) cv::flip(frame, frame, 1);
 
@@ -84,36 +129,29 @@ void Game::run() {
         cvtColor(frame, gray_frame, cv::COLOR_BGR2GRAY);
         background.copyTo(frame);
 
-        //cerveja
+        // cerveja
         beer.draw(frame, fx, fy);
         cv::Rect beerRect(fx, fy, beer.getWidth(), beer.getHeight());
 
-        // //agua
+        // agua
         water.draw(frame, gx, gy);
         cv::Rect waterRect(gx, gy, water.getWidth(), water.getHeight());
 
-        //derzas
+        // derzas
         derzas.draw(frame, x, y);
         cv::Rect derzasRect(x, y, derzas.getWidth(), derzas.getHeight());
-        
-        //rosto
+
+        // rosto
         std::vector<cv::Rect> faces;
         faceDetector.detect(gray_frame, faces);
-        
-        // if (faces.empty()) {
-        //     std::cout << "Nenhum rosto detectado." << std::endl;
-        // } else {
-        //     std::cout << "Rostos detectados: " << faces.size() << std::endl;
-        // }
 
-        for (const auto& face  : faces) {
+        for (const auto& face : faces) {
             cv::rectangle(frame, face, cv::Scalar(255, 0, 0), 2);
-            
+
             if (!(face.y + derzas.getHeight() >= 480 || face.y <= 0) && 
                 !(face.x + derzas.getWidth() >= 640 || face.x <= 0)) {
                 x = face.x; y = face.y;
             }
-
 
             if ((derzasRect & beerRect).area() > 0) {
                 std::cout << "Colidiu" << std::endl;
@@ -148,10 +186,10 @@ void Game::run() {
                 score -= 3;
             }
 
-            if ( gx < face.x  && gx < (680 - water.getWidth())) gx += 1;
-            if ( gy < face.y && gy < (480 - water.getHeight()) ) gy += 1;
-            if ( gx > face.x && gx > 1) gx -= 1;
-            if ( gy > face.y && gy > 1) gy -= 1;
+            if (gx < face.x && gx < (680 - water.getWidth())) gx += 1;
+            if (gy < face.y && gy < (480 - water.getHeight())) gy += 1;
+            if (gx > face.x && gx > 1) gx -= 1;
+            if (gy > face.y && gy > 1) gy -= 1;
 
             break;
         }

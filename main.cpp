@@ -16,7 +16,7 @@ int main() {
     srand(time(0));
 
     Game game = Game(windowName, cascadeName, backgroundFilename, beerFilename, caipirinhaFilename, derzasFilename, waterFilename, whiskeyFilename, wineFilename, flip);
-    game.run();
+    game.showMenu();
 
     return 0;
 }

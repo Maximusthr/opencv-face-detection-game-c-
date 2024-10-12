@@ -19,6 +19,7 @@ class Game {
         std::string windowName;
         FaceDetector faceDetector;
         cv::Mat background;
+        cv::Mat frame;
         cv::VideoCapture cap;
         Game_object derzas, beer, water;
         std::chrono::time_point<std::chrono::steady_clock> startTime;
@@ -38,4 +39,6 @@ class Game {
              std::string wineFilename, bool flip);
 
         void run();
+        void showMenu();
+        void showScore();
 };
