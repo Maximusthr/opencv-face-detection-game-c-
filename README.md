@@ -35,7 +35,12 @@ Instalando o <b>Derzas Adventures'</b>:
   ```sh
   git clone https://github.com/Maximusthr/opencv-face-detection-game-c-.git
   ```
-2. Comando de compilação:
+2. É preciso instalar a biblioteca de áudio <b>mpg123</b> para que os sons do jogo sejam tocados:
+> Comando de instalação apenas para o Ubuntu/Debian:
+  ```sh
+  sudo apt-get install mpg123
+  ```
+3. Comando de compilação:
   ```sh
   /compile.sh
   ```
